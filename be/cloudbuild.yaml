@@ -31,11 +31,11 @@ steps:
       [
         "run",
         "deploy",
-        "be",
+        "be-dea",
         "--image",
         "gcr.io/$PROJECT_ID/be-dea",
         "--timeout",
-        "1000s",
+        "360s",
         "--port",
         "5000",
         "--region",

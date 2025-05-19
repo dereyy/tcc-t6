@@ -1,0 +1,80 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+import NotesList from "./components/NotesList";
+import { API_BASE_URL } from "./Util/util";
+import Login from "./components/Login";
+
+const App = () => {
+  const [notes, setNotes] = useState([]);
+
+  // Fungsi untuk mengambil data notes dari backend
+  const fetchNotes = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/notes`);
+      setNotes(response.data);
+    } catch (error) {
+      console.error("❌ Gagal mengambil data:", error);
+      alert("Gagal mengambil data catatan!");
+    }
+  };
+
+  // Panggil fetchNotes saat pertama kali halaman dibuka
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const addNote = async (noteData) => {
+    try {
+      await axios.post(`${API_BASE_URL}/tambah-note`, {
+        judul: noteData.judul,
+        isi: noteData.isi,
+        tanggal: new Date().toISOString(),
+      });
+      await fetchNotes();  // 🔄 Refresh data setelah menambah note
+    } catch (error) {
+      console.error("❌ Gagal menambah note:", error);
+      alert("Gagal menambah catatan!");
+    }
+  };
+
+  const deleteNote = async (id) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/hapus-note/${id}`);
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+    } catch (error) {
+      console.error("❌ Gagal menghapus note:", error);
+      alert("Gagal menghapus catatan!");
+    }
+  };
+
+  const editNote = async (id, judulBaru, isiBaru) => {
+    try {
+      await axios.put(`${API_BASE_URL}/edit-note/${id}`, {
+        judul: judulBaru,
+        isi: isiBaru,
+      });
+      await fetchNotes();  // 🔄 Refresh data setelah mengedit note
+    } catch (error) {
+      console.error("❌ Gagal mengedit note:", error);
+      alert("Gagal mengedit catatan!");
+    }
+  };
+
+  return (
+    <div className="container">
+      <h1>Notes</h1>
+      {notes.length > 0 ? (
+        <NotesList
+          notes={notes}
+          handleAddNote={addNote}
+          handleDeleteNote={deleteNote}
+          handleEditNote={editNote}
+        />
+      ) : (
+        <p>Tidak ada catatan.</p>
+      )}
+    </div>
+  );
+};
+
+export default App;

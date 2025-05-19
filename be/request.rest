@@ -1,0 +1,104 @@
+### GET ALL USERS (Butuh Token)
+GET http://localhost:5000/api/user/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJpYXQiOjE3NDc2NDQxMDgsImV4cCI6MTc0NzY0NTAwOH0.N6l4XrHI2ER21Vcw-XN8Rd4g1sjBWE_ev8hfO4afC0U
+###
+
+### GET USER BY ID (Butuh Token)
+GET http://localhost:5000/api/user/users/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJpYXQiOjE3NDc2NDQxMDgsImV4cCI6MTc0NzY0NTAwOH0.N6l4XrHI2ER21Vcw-XN8Rd4g1sjBWE_ev8hfO4afC0U
+
+###
+
+### POST REGISTER USER
+POST http://localhost:5000/api/user/register
+Content-Type: application/json
+
+{
+  "name": "Deaaa2",
+  "email": "deaa2@example.com",
+  "gender": "female",
+  "password": "password123"
+}
+
+
+###
+
+### PUT UPDATE USER (Optional Password) (Butuh Token)
+PUT http://localhost:5000/api/user/edit-user/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkRlYSIsImVtYWlsIjoiZGVhQGV4YW1wbGUuY29tIiwiZ2VuZGVyIjoiZmVtYWxlIiwiY3JlYXRlZEF0IjoiMjAyNS0wNS0xNlQxNjowMToyOS4wMDBaIiwidXBkYXRlZEF0IjoiMjAyNS0wNS0xNlQxNzowOTo0NS4wMDBaIiwiaWF0IjoxNzQ3NDE1NDY2LCJleHAiOjE3NDc0MTU0OTZ9.UxDmr529TGxlpKo6WX0XhT0QbAH8pFay3oZ45mHc3RI
+Content-Type: application/json
+
+{
+  "name": "tessss",
+  "email": "tesss@tessss.com",
+  "gender": "Male"
+}
+
+###
+
+### DELETE USER BY ID
+DELETE http://localhost:5000/api/user/delete-user/1
+
+###
+
+### POST LOGIN
+POST http://localhost:5000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "deaa2@example.com",
+  "password": "password123"
+}
+
+###
+
+### GET REFRESH TOKEN
+GET http://localhost:5000/api/user/token
+
+###
+
+### DELETE LOGOUT
+DELETE http://localhost:5000/api/user/logout
+
+
+### ===================== NOTES API =====================
+
+### GET ALL NOTES (Butuh Token)
+GET http://localhost:5000/api/notes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34
+
+###
+
+### GET NOTE BY ID (Butuh Token)
+GET http://localhost:5000/api/notes/16
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34
+
+###
+
+### POST NEW NOTE (Butuh Token)
+POST http://localhost:5000/api/notes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34
+Content-Type: application/json
+
+{
+  "judul": "Contoh Catatan",
+  "isi": "Ini adalah isi dari catatan pertama saya."
+}
+
+###
+
+### PUT UPDATE NOTE BY ID (Butuh Token)
+PUT http://localhost:5000/api/notes/16
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34
+Content-Type: application/json
+
+{
+  "judul": "Catatan Diperbarui",
+  "isi": "Isi catatan telah diperbarui."
+}
+
+###
+
+### DELETE NOTE BY ID (Butuh Token)
+DELETE http://localhost:5000/api/notes/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34
