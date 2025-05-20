@@ -18,6 +18,7 @@ axios.interceptors.request.use(
     }
     // Ensure credentials are sent with every request
     config.withCredentials = true;
+    config.headers['X-Requested-With'] = 'XMLHttpRequest';
     return config;
   },
   (error) => {
@@ -43,7 +44,8 @@ axios.interceptors.response.use(
           withCredentials: true,
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
           }
         });
 

@@ -155,12 +155,14 @@ async function loginHandler(req, res) {
     // Set cookie options
     const cookieOptions = {
       httpOnly: true,
-      secure: true, // Always true for production
-      sameSite: 'none', // Required for cross-site cookies
+      secure: true,
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/', // Important for cookie to be sent with all requests
-      domain: '.us-central1.run.app' // Your domain
+      path: '/',
+      domain: 'be-dea-505940949397.us-central1.run.app' // Full domain for Cloud Run
     };
+
+    console.log("Setting cookie with options:", cookieOptions);
 
     // Set refresh token cookie
     res.cookie("refreshToken", refreshToken, cookieOptions);
