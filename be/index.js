@@ -1,40 +1,28 @@
-// Server backend
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import AuthRoute from "./route/AuthRoute.js";
+import NotesRoute from "./route/Route.js";
 
-// Import routes
-import GeneralRoute from "./route/Route.js"; // untuk fitur umum/catatan
-import UserRoute from "./route/UserRoute.js"; // untuk auth/user
-
-const app = express();
 dotenv.config();
+const app = express();
 
-// Middleware
 app.use(cookieParser());
 app.use(express.json());
-
-// CORS configuration
-app.use(cors({
-    origin: ["https://frontend-dea-dot-b-08-450916.uc.r.appspot.com", "http://localhost:3000"],
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://frontend-dea-dot-b-08-450916.uc.r.appspot.com",
+    ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Set-Cookie'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-}));
+  })
+);
 
-// Routes
-app.use("/api", GeneralRoute);
-app.use("/api/user", UserRoute); // endpoints: /api/user/login, /api/user/register, etc.
-app.use(AuthRoute);
-
-// Home page
 app.get("/", (req, res) => res.send("Server is running 🚀"));
+app.use("/api/user", AuthRoute);
+app.use("/api", NotesRoute);
 
-// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server berjalan di http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server berjalan di port ${PORT}`));

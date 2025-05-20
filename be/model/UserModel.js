@@ -1,23 +1,18 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 
-// Membuat tabel "user"
-
-//PERBARUI MODEL USER DENGAN MENAMBAHKAN PASSWORD DAN REFRESH TOKEN
 const User = db.define(
-  "user", // Nama Tabel
+  "user",
   {
-    name: Sequelize.STRING,
-    email: Sequelize.STRING,
-    gender: Sequelize.STRING,
-    password: Sequelize.STRING,
-    refresh_token: Sequelize.TEXT,
+    name: { type: Sequelize.STRING },
+    email: { type: Sequelize.STRING, unique: true },
+    gender: { type: Sequelize.STRING },
+    password: { type: Sequelize.STRING },
+    refresh_token: { type: Sequelize.TEXT },
   },
   {
     freezeTableName: true,
   }
 );
-
-db.sync().then(() => console.log("Database synced"));
 
 export default User;

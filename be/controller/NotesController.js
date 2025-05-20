@@ -1,67 +1,32 @@
-  import Notes from "../model/NotesModel.js";
+import Notes from "../model/NotesModel.js";
 
-  // Get All Notes
-  export const getNotes = async (req, res) => {
-    try {
-      const response = await Notes.findAll();
-      res.status(200).json(response);
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ msg: "Gagal mengambil data catatan" });
-    }
-  };
+export const getNotes = async (req, res) => {
+  const data = await Notes.findAll();
+  res.json(data);
+};
 
-  // Create Note
-  export const createNote = async (req, res) => {
-    const { judul, isi } = req.body;  // Ganti title jadi judul
-    if (!judul || !isi) {
-      return res.status(400).json({ msg: "Judul dan Isi harus diisi" });
-    }
-    try {
-      await Notes.create(req.body);
-      res.status(201).json({ msg: "Notes Berhasil Dibuat" });
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ msg: "Gagal membuat catatan" });
-    }
-  };
+export const createNote = async (req, res) => {
+  const { judul, isi } = req.body;
+  if (!judul || !isi)
+    return res.status(400).json({ msg: "Judul dan Isi harus diisi" });
+  await Notes.create({ judul, isi });
+  res.status(201).json({ msg: "Notes Berhasil Dibuat" });
+};
 
-  // Update Note
-  export const updateNote = async (req, res) => {
-    const { judul, isi } = req.body;  // Ganti title jadi judul
-    if (!judul || !isi) {
-      return res.status(400).json({ msg: "Judul dan Isi harus diisi" });
-    }
-    try {
-      const updated = await Notes.update(req.body, {
-        where: {
-          id: req.params.id
-        }
-      });
-      if (updated[0] === 0) {
-        return res.status(404).json({ msg: "Catatan tidak ditemukan" });
-      }
-      res.status(200).json({ msg: "Notes Berhasil Diubah" });
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ msg: "Gagal mengubah catatan" });
-    }
-  };
+export const updateNote = async (req, res) => {
+  const { judul, isi } = req.body;
+  if (!judul || !isi)
+    return res.status(400).json({ msg: "Judul dan Isi harus diisi" });
+  const [updated] = await Notes.update(
+    { judul, isi },
+    { where: { id: req.params.id } }
+  );
+  if (!updated) return res.status(404).json({ msg: "Catatan tidak ditemukan" });
+  res.json({ msg: "Notes Berhasil Diubah" });
+};
 
-  // Delete Note
-  export const deleteNote = async (req, res) => {
-    try {
-      const deleted = await Notes.destroy({
-        where: {
-          id: req.params.id
-        }
-      });
-      if (deleted === 0) {
-        return res.status(404).json({ msg: "Catatan tidak ditemukan" });
-      }
-      res.status(200).json({ msg: "Notes Berhasil Dihapus" });
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ msg: "Gagal menghapus catatan" });
-    }
-  };
+export const deleteNote = async (req, res) => {
+  const deleted = await Notes.destroy({ where: { id: req.params.id } });
+  if (!deleted) return res.status(404).json({ msg: "Catatan tidak ditemukan" });
+  res.json({ msg: "Notes Berhasil Dihapus" });
+};

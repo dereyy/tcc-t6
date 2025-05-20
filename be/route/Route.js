@@ -8,10 +8,9 @@ import {
 import { verifyToken } from "../middleware/VerifyToken.js";
 
 const router = express.Router();
-
-router.get("/notes", verifyToken, getNotes);
-router.post("/notes", verifyToken, createNote);
-router.put("/notes/:id", verifyToken, updateNote);
-router.delete("/notes/:id", verifyToken, deleteNote);
-
+router.use(verifyToken);
+router.get("/notes", getNotes);
+router.post("/notes", createNote);
+router.put("/notes/:id", updateNote);
+router.delete("/notes/:id", deleteNote);
 export default router;

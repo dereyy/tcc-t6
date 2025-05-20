@@ -1,14 +1,12 @@
 import express from "express";
-import { Login, Logout, Register } from "../controller/AuthController.js";
-import { verifyToken } from "../middleware/VerifyToken.js";
+import { Register, Login, Logout } from "../controller/AuthController.js";
+import { refreshToken } from "../controller/RefreshToken.js";
 
 const router = express.Router();
 
-router.post('/register', Register);
-router.post('/login', Login);
-router.delete('/logout', Logout);
-router.get('/token', verifyToken, (req, res) => {
-    res.json({ msg: "Token valid" });
-});
+router.post("/register", Register);
+router.post("/login", Login);
+router.get("/token", refreshToken); // ← token refresh
+router.delete("/logout", Logout);
 
-export default router; 
+export default router;
