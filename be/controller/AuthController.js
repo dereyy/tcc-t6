@@ -16,9 +16,9 @@ export const Register = async (req, res) => {
 
 export const Login = async (req, res) => {
   const user = await User.findOne({ where: { email: req.body.email } });
-  if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+  if (!user) return res.status(404).json({ status: "Error", message: "User tidak ditemukan" });
   const match = await bcrypt.compare(req.body.password, user.password);
-  if (!match) return res.status(400).json({ message: "Password Salah" });
+  if (!match) return res.status(400).json({ status: "Error", message: "Password Salah" });
 
   const payload = {
     userId: user.id,
@@ -42,11 +42,22 @@ export const Login = async (req, res) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "None",
+    sameSite: "lax",
+    path: '/',
     maxAge: 24 * 60 * 60 * 1000,
   });
 
-  res.json({ accessToken });
+  res.json({
+    status: "Success",
+    message: "Login berhasil",
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      gender: user.gender
+    },
+    accessToken
+  });
 };
 
 export const Logout = async (req, res) => {
