@@ -3,11 +3,15 @@ import Notes from "../model/NotesModel.js";
 export const getNotes = async (req, res) => {
   try {
     const data = await Notes.findAll({
+      where: {
+        userId: req.userId // Filter notes by user ID
+      },
       order: [['createdAt', 'DESC']] // Urutkan dari yang terbaru
     });
+    
     res.json({
       status: "Success",
-      data: data
+      data: data || [] // Return empty array if no notes found
     });
   } catch (error) {
     console.error("Error getting notes:", error);
