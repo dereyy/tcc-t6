@@ -21,7 +21,7 @@ export const Login = async (req, res) => {
   if (!match) return res.status(400).json({ status: "Error", message: "Password Salah" });
 
   const payload = {
-    userId: user.id,
+    id: user.id,
     name: user.name,
     email: user.email,
     gender: user.gender,
