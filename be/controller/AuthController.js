@@ -62,12 +62,18 @@ export const Login = async (req, res) => {
             }
         });
         
-        res.cookie('refreshToken', refreshToken, {
+        // Set cookie options
+        const cookieOptions = {
             httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000
-        });
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
+        };
         
-        res.json({ 
+        res.cookie('refreshToken', refreshToken, cookieOptions);
+        
+        // Send response
+        res.status(200).json({ 
             status: "Success",
             message: "Login berhasil",
             user: {
@@ -79,6 +85,7 @@ export const Login = async (req, res) => {
             accessToken: accessToken
         });
     } catch (error) {
+        console.error('Login error:', error);
         res.status(404).json({ 
             status: "Error",
             message: "Email tidak ditemukan" 
@@ -89,21 +96,39 @@ export const Login = async (req, res) => {
 export const Logout = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.sendStatus(204);
-    const user = await User.findOne({
-        where: {
-            refresh_token: refreshToken
-        }
-    });
-    if (!user) return res.sendStatus(204);
-    const userId = user.id;
-    await User.update({ refresh_token: null }, {
-        where: {
-            id: userId
-        }
-    });
-    res.clearCookie('refreshToken');
-    return res.json({
-        status: "Success",
-        message: "Logout berhasil"
-    });
+    
+    try {
+        const user = await User.findOne({
+            where: {
+                refresh_token: refreshToken
+            }
+        });
+        
+        if (!user) return res.sendStatus(204);
+        
+        await User.update({ refresh_token: null }, {
+            where: {
+                id: user.id
+            }
+        });
+        
+        // Clear cookie with same options as setting
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        };
+        
+        res.clearCookie('refreshToken', cookieOptions);
+        return res.json({
+            status: "Success",
+            message: "Logout berhasil"
+        });
+    } catch (error) {
+        console.error('Logout error:', error);
+        return res.status(500).json({
+            status: "Error",
+            message: "Terjadi kesalahan saat logout"
+        });
+    }
 } 
