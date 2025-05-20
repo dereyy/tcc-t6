@@ -3,11 +3,14 @@ import jwt from "jsonwebtoken";
 
 export const refreshToken = async(req, res) => {
     try {
-        const refreshToken = req.cookies.refreshToken;
+        // Get refresh token from Authorization header
+        const authHeader = req.headers['authorization'];
+        const refreshToken = authHeader && authHeader.split(' ')[1];
+        
         console.log("Attempting to refresh token...");
         
         if(!refreshToken) {
-            console.log("No refresh token found in cookies");
+            console.log("No refresh token found in header");
             return res.status(401).json({ msg: "Refresh token tidak ditemukan" });
         }
 

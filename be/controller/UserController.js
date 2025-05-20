@@ -152,27 +152,13 @@ async function loginHandler(req, res) {
       });
     }
 
-    // Set cookie options
-    const cookieOptions = {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/',
-      domain: 'be-dea-505940949397.us-central1.run.app' // Full domain for Cloud Run
-    };
-
-    console.log("Setting cookie with options:", cookieOptions);
-
-    // Set refresh token cookie
-    res.cookie("refreshToken", refreshToken, cookieOptions);
-
-    // Send response
+    // Send response with both tokens
     res.status(200).json({
       status: "Success",
       message: "Login berhasil",
       user: safeUserData,
       accessToken,
+      refreshToken // Send refresh token in response
     });
   } catch (error) {
     console.error("Login error:", error);

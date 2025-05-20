@@ -7,7 +7,6 @@ import { API_BASE_URL } from "./Util/util";
 
 // Konfigurasi axios
 axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
 
 // Add request interceptor
 axios.interceptors.request.use(
@@ -16,9 +15,6 @@ axios.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    // Ensure credentials are sent with every request
-    config.withCredentials = true;
-    config.headers['X-Requested-With'] = 'XMLHttpRequest';
     return config;
   },
   (error) => {
@@ -39,13 +35,17 @@ axios.interceptors.response.use(
       try {
         console.log("Access token expired, trying to refresh...");
         
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+          throw new Error("No refresh token found");
+        }
+
         // Try to refresh token
         const response = await axios.get(`${API_BASE_URL}/user/token`, {
-          withCredentials: true,
           headers: {
+            'Authorization': `Bearer ${refreshToken}`,
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
+            'Content-Type': 'application/json'
           }
         });
 
@@ -65,6 +65,7 @@ axios.interceptors.response.use(
         console.error("Failed to refresh token:", refreshError);
         // If refresh token fails, redirect to login
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         localStorage.removeItem("userId");
         window.location.href = "/";
         return Promise.reject(refreshError);
