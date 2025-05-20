@@ -19,6 +19,7 @@ const Login = ({ onLoginSuccess, navigateToRegister }) => {
         `${API_BASE_URL}/user/login`,
         { email, password },
         { 
+          withCredentials: true,
           headers: {
             'Content-Type': 'application/json'
           }
@@ -27,36 +28,24 @@ const Login = ({ onLoginSuccess, navigateToRegister }) => {
 
       console.log("Login response:", response.data);
 
-      const { accessToken, refreshToken } = response.data;
-      if (!accessToken || !refreshToken) {
-        throw new Error("Token tidak ada di response");
-      }
-
-      // Store tokens
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-
-      // Decode JWT to get userId
-      try {
-        const payload = JSON.parse(atob(accessToken.split(".")[1]));
-        console.log("Decoded token payload:", payload);
+      if (response.data.status === "Success") {
+        const { accessToken, user } = response.data;
         
-        if (!payload.id) {
-          throw new Error("ID tidak ditemukan dalam token");
-        }
+        // Store token and user data
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("userId", user.id);
+        localStorage.setItem("user", JSON.stringify(user));
         
-        localStorage.setItem("userId", payload.id);
         onLoginSuccess();
-      } catch (decodeError) {
-        console.error("Error decoding token:", decodeError);
-        throw new Error("Token tidak valid");
+      } else {
+        throw new Error(response.data.message || "Login gagal");
       }
     } catch (err) {
       console.error("Login error:", err);
       
       if (err.response) {
         // Server responded with error
-        setError(err.response.data?.msg || "Server error: " + err.response.status);
+        setError(err.response.data?.message || "Server error: " + err.response.status);
       } else if (err.request) {
         // No response received
         setError("Tidak dapat terhubung ke server. Pastikan server berjalan.");
