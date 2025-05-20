@@ -13,10 +13,16 @@ export const Register = async (req, res) => {
             gender: gender,
             password: hashPassword
         });
-        res.json({ msg: "Registrasi Berhasil" });
+        res.json({ 
+            status: "Success",
+            message: "Registrasi Berhasil" 
+        });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ msg: "Email sudah terdaftar" });
+        res.status(400).json({ 
+            status: "Error",
+            message: "Email sudah terdaftar" 
+        });
     }
 }
 
@@ -27,9 +33,16 @@ export const Login = async (req, res) => {
                 email: req.body.email
             }
         });
-        if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+        if (!user) return res.status(404).json({ 
+            status: "Error",
+            message: "User tidak ditemukan" 
+        });
+        
         const match = await bcrypt.compare(req.body.password, user.password);
-        if (!match) return res.status(400).json({ msg: "Password Salah" });
+        if (!match) return res.status(400).json({ 
+            status: "Error",
+            message: "Password Salah" 
+        });
         
         const userId = user.id;
         const name = user.name;
@@ -54,9 +67,22 @@ export const Login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000
         });
         
-        res.json({ accessToken });
+        res.json({ 
+            status: "Success",
+            message: "Login berhasil",
+            user: {
+                id: userId,
+                name: name,
+                email: email,
+                gender: gender
+            },
+            accessToken: accessToken
+        });
     } catch (error) {
-        res.status(404).json({ msg: "Email tidak ditemukan" });
+        res.status(404).json({ 
+            status: "Error",
+            message: "Email tidak ditemukan" 
+        });
     }
 }
 
@@ -76,5 +102,8 @@ export const Logout = async (req, res) => {
         }
     });
     res.clearCookie('refreshToken');
-    return res.sendStatus(200);
+    return res.json({
+        status: "Success",
+        message: "Logout berhasil"
+    });
 } 
