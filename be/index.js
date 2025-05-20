@@ -11,8 +11,6 @@ import UserRoute from "./route/UserRoute.js"; // <- khusus untuk auth/user
 const app = express();
 dotenv.config();
 
-app.set("view engine", "ejs");
-
 app.use(cookieParser());
 app.use(
   cors({
@@ -27,7 +25,7 @@ app.use("/api", GeneralRoute);
 app.use("/api/user", UserRoute); // semua endpoint user seperti /login, /register akan menjadi /api/user/login dll
 
 // Halaman utama
-app.get("/", (req, res) => res.render("index"));
+app.get("/", (req, res) => res.send("Server is running 🚀"));
 
 // Start server
 app.listen(5000, () =>
