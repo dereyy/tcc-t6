@@ -165,7 +165,12 @@ async function loginHandler(req, res) {
     res.status(200).json({
       status: "Success",
       message: "Login berhasil",
-      user: safeUserData,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        gender: user.gender
+      },
       accessToken
     });
   } catch (error) {
