@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import AuthRoute from "./route/AuthRoute.js";
 
 // Import routes
 import GeneralRoute from "./route/Route.js"; // untuk fitur umum/catatan
@@ -31,6 +32,7 @@ app.use(
 // Routes
 app.use("/api", GeneralRoute);
 app.use("/api/user", UserRoute); // endpoints: /api/user/login, /api/user/register, etc.
+app.use(AuthRoute);
 
 // Home page
 app.get("/", (req, res) => res.send("Server is running 🚀"));
