@@ -6,26 +6,64 @@ import "./Auth.css";
 const Login = ({ onLoginSuccess, navigateToRegister }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(""); // Reset error state
+
     try {
+      console.log("Attempting login to:", `${API_BASE_URL}/user/login`);
+      
       const response = await axios.post(
         `${API_BASE_URL}/user/login`,
         { email, password },
-        { withCredentials: true }
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
+
+      console.log("Login response:", response.data);
+
       const { accessToken } = response.data;
-      if (!accessToken) throw new Error("Token tidak ada di response");
+      if (!accessToken) {
+        throw new Error("Token tidak ada di response");
+      }
+
+      // Store token
       localStorage.setItem("accessToken", accessToken);
 
-      // decode JWT untuk dapatkan userId
-      const payload = JSON.parse(atob(accessToken.split(".")[1]));
-      localStorage.setItem("userId", payload.id);
-
-      onLoginSuccess();
+      // Decode JWT to get userId
+      try {
+        const payload = JSON.parse(atob(accessToken.split(".")[1]));
+        console.log("Decoded token payload:", payload);
+        
+        if (!payload.id) {
+          throw new Error("ID tidak ditemukan dalam token");
+        }
+        
+        localStorage.setItem("userId", payload.id);
+        onLoginSuccess();
+      } catch (decodeError) {
+        console.error("Error decoding token:", decodeError);
+        throw new Error("Token tidak valid");
+      }
     } catch (err) {
-      alert(`Login gagal: ${err.response?.data?.msg || err.message}`);
+      console.error("Login error:", err);
+      
+      if (err.response) {
+        // Server responded with error
+        setError(err.response.data?.msg || "Server error: " + err.response.status);
+      } else if (err.request) {
+        // No response received
+        setError("Tidak dapat terhubung ke server. Pastikan server berjalan.");
+      } else {
+        // Other errors
+        setError(err.message || "Terjadi kesalahan saat login");
+      }
     }
   };
 
@@ -33,6 +71,17 @@ const Login = ({ onLoginSuccess, navigateToRegister }) => {
     <div className="auth-page">
       <div className="auth-card">
         <h1>Login</h1>
+        {error && (
+          <div style={{ 
+            color: 'red', 
+            marginBottom: '15px',
+            padding: '10px',
+            backgroundColor: '#ffebee',
+            borderRadius: '4px'
+          }}>
+            {error}
+          </div>
+        )}
         <form onSubmit={handleLogin}>
           <div className="form-field">
             <label>Email</label>
