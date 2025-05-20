@@ -14,10 +14,11 @@ dotenv.config();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://frontend-dea-dot-b-08-450916.uc.r.appspot.com", // Hapus trailing slash
+    origin: "https://frontend-dea-dot-b-08-450916.uc.r.appspot.com",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    exposedHeaders: ['Set-Cookie']
   })
 );
 app.use(express.json());

@@ -7,6 +7,7 @@ import { API_BASE_URL } from "./Util/util";
 
 // Konfigurasi axios
 axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
 
 // Add request interceptor
 axios.interceptors.request.use(
@@ -15,6 +16,8 @@ axios.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // Ensure credentials are sent with every request
+    config.withCredentials = true;
     return config;
   },
   (error) => {
@@ -37,7 +40,11 @@ axios.interceptors.response.use(
         
         // Try to refresh token
         const response = await axios.get(`${API_BASE_URL}/user/token`, {
-          withCredentials: true
+          withCredentials: true,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
         });
 
         const { accessToken } = response.data;

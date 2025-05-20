@@ -124,7 +124,6 @@ async function loginHandler(req, res) {
     const userPlain = user.toJSON();
     const { password: _, refresh_token: __, ...safeUserData } = userPlain;
 
-    // Generate access token with 15 minutes expiration
     const accessToken = jwt.sign(
       safeUserData,
       process.env.ACCESS_TOKEN_SECRET,
@@ -132,18 +131,15 @@ async function loginHandler(req, res) {
         expiresIn: "30s",
       }
     );
-
-    // Generate refresh token with 7 days expiration
     const refreshToken = jwt.sign(
       safeUserData,
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "7d",
       }
     );
 
     try {
-      // Update refresh token in database
       await User.update(
         { refresh_token: refreshToken },
         { where: { id: user.id } }
@@ -156,13 +152,14 @@ async function loginHandler(req, res) {
       });
     }
 
-    // Set cookie options based on environment
-    const isProduction = process.env.NODE_ENV === "production";
+    // Set cookie options
     const cookieOptions = {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      secure: true, // Always true for production
+      sameSite: 'none', // Required for cross-site cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/', // Important for cookie to be sent with all requests
+      domain: '.us-central1.run.app' // Your domain
     };
 
     // Set refresh token cookie
