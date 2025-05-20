@@ -12,9 +12,10 @@ const app = express();
 dotenv.config();
 
 // Middleware
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
 
+// CORS configuration
 app.use(
   cors({
     origin: ["https://frontend-dea-dot-b-08-450916.uc.r.appspot.com", "http://localhost:3000"],

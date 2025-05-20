@@ -37,6 +37,7 @@ axios.interceptors.request.use(
     console.log('URL:', config.url);
     console.log('Method:', config.method);
     console.log('Headers:', config.headers);
+    console.log('WithCredentials:', config.withCredentials);
     
     return config;
   },
@@ -52,6 +53,7 @@ axios.interceptors.response.use(
     console.log('=== Response Success ===');
     console.log('URL:', response.config.url);
     console.log('Status:', response.status);
+    console.log('Headers:', response.headers);
     return response;
   },
   async (error) => {
@@ -61,6 +63,7 @@ axios.interceptors.response.use(
     console.log('=== Response Error ===');
     console.log('URL:', originalRequest.url);
     console.log('Status:', error.response?.status);
+    console.log('Headers:', error.response?.headers);
     console.log('Data:', error.response?.data);
 
     // Jika request adalah untuk refresh token, jangan coba refresh lagi
