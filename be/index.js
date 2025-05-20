@@ -1,12 +1,12 @@
-// server beimport express from "express";
+// Server backend
+import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import express from "express";
 
-// Import kedua route
-import GeneralRoute from "./route/Route.js"; // <- misalnya untuk fitur umum/catatan
-import UserRoute from "./route/UserRoute.js"; // <- khusus untuk auth/user
+// Import routes
+import GeneralRoute from "./route/Route.js"; // untuk fitur umum/catatan
+import UserRoute from "./route/UserRoute.js"; // untuk auth/user
 
 const app = express();
 dotenv.config();
@@ -14,20 +14,21 @@ dotenv.config();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://frontend-dea-dot-b-08-450916.uc.r.appspot.com/",
+    origin: "https://frontend-dea-dot-b-08-450916.uc.r.appspot.com/", // URL frontend development
     credentials: true,
   })
 );
 app.use(express.json());
 
-// Gunakan route secara eksplisit (berbeda path agar jelas)
+// Use routes
 app.use("/api", GeneralRoute);
-app.use("/api/user", UserRoute); // semua endpoint user seperti /login, /register akan menjadi /api/user/login dll
+app.use("/api/user", UserRoute); // endpoints: /api/user/login, /api/user/register, etc.
 
-// Halaman utama
+// Home page
 app.get("/", (req, res) => res.send("Server is running 🚀"));
 
 // Start server
-app.listen(5000, () =>
-  console.log("Server telah berjalan di http://localhost:5000")
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =>
+  console.log(`Server berjalan di http://localhost:${PORT}`)
 );
