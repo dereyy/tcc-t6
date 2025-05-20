@@ -36,7 +36,7 @@ app.use("/api/user", UserRoute); // endpoints: /api/user/login, /api/user/regist
 app.get("/", (req, res) => res.send("Server is running 🚀"));
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () =>
   console.log(`Server berjalan di http://localhost:${PORT}`)
 );
