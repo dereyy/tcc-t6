@@ -10,6 +10,14 @@ const Notes = db.define(
       type: Sequelize.DATEONLY,
       defaultValue: Sequelize.fn("CURDATE"),
     },
+    userId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'user',
+        key: 'id'
+      }
+    }
   },
   {
     freezeTableName: true,

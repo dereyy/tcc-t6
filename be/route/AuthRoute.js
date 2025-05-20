@@ -28,7 +28,7 @@ router.get("/users/:id", verifyToken, async (req, res) => {
     
     res.json({
       status: "Success",
-      data: user
+      ...user.toJSON() // Langsung kirim data user tanpa wrapper data
     });
   } catch (error) {
     console.error("Error getting user:", error);
