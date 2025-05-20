@@ -11,7 +11,10 @@ import UserRoute from "./route/UserRoute.js"; // untuk auth/user
 const app = express();
 dotenv.config();
 
+// Middleware
+app.use(express.json());
 app.use(cookieParser());
+
 app.use(
   cors({
     origin: ["https://frontend-dea-dot-b-08-450916.uc.r.appspot.com", "http://localhost:3000"],
@@ -23,9 +26,8 @@ app.use(
     optionsSuccessStatus: 204
   })
 );
-app.use(express.json());
 
-// Use routes
+// Routes
 app.use("/api", GeneralRoute);
 app.use("/api/user", UserRoute); // endpoints: /api/user/login, /api/user/register, etc.
 

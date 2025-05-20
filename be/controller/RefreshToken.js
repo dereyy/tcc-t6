@@ -3,14 +3,11 @@ import jwt from "jsonwebtoken";
 
 export const refreshToken = async(req, res) => {
     try {
-        // Get refresh token from Authorization header
-        const authHeader = req.headers['authorization'];
-        const refreshToken = authHeader && authHeader.split(' ')[1];
-        
+        const refreshToken = req.cookies.refreshToken;
         console.log("Attempting to refresh token...");
         
         if(!refreshToken) {
-            console.log("No refresh token found in header");
+            console.log("No refresh token found in cookies");
             return res.status(401).json({ msg: "Refresh token tidak ditemukan" });
         }
 
@@ -48,7 +45,7 @@ export const refreshToken = async(req, res) => {
             console.log("New access token generated");
             res.json({ accessToken });
         });
-    } catch(error) {
+    } catch (error) {
         console.error("Error in refreshToken:", error);
         res.status(500).json({ msg: "Terjadi kesalahan pada server" });
     }
