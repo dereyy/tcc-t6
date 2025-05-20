@@ -124,36 +124,51 @@ async function loginHandler(req, res) {
     const userPlain = user.toJSON();
     const { password: _, refresh_token: __, ...safeUserData } = userPlain;
 
+    // Generate access token with 15 minutes expiration
     const accessToken = jwt.sign(
       safeUserData,
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "30s", 
+        expiresIn: "15m",
       }
     );
+
+    // Generate refresh token with 7 days expiration
     const refreshToken = jwt.sign(
       safeUserData,
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "7d",
       }
     );
 
-    await User.update(
-      { refresh_token: refreshToken },
-      { where: { id: user.id } }
-    );
+    try {
+      // Update refresh token in database
+      await User.update(
+        { refresh_token: refreshToken },
+        { where: { id: user.id } }
+      );
+    } catch (updateError) {
+      console.error("Error updating refresh token:", updateError);
+      return res.status(500).json({
+        status: "Error",
+        message: "Gagal menyimpan refresh token",
+      });
+    }
 
-    // Atur secure: false jika di localhost/development
+    // Set cookie options based on environment
     const isProduction = process.env.NODE_ENV === "production";
-
-    res.cookie("refreshToken", refreshToken, {
+    const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
       sameSite: "Strict",
-      maxAge: 24 * 60 * 60 * 1000, // 1 hari dalam milidetik
-    });
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    };
 
+    // Set refresh token cookie
+    res.cookie("refreshToken", refreshToken, cookieOptions);
+
+    // Send response
     res.status(200).json({
       status: "Success",
       message: "Login berhasil",
