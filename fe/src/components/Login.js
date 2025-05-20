@@ -28,8 +28,13 @@ const Login = ({ onLoginSuccess, navigateToRegister }) => {
 
       console.log("Login response:", response.data);
 
+      // Cek status response
       if (response.data.status === "Success") {
         const { accessToken, user } = response.data;
+        
+        if (!accessToken) {
+          throw new Error("Token tidak ada di response");
+        }
         
         // Store token and user data
         localStorage.setItem("accessToken", accessToken);
