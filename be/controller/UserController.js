@@ -129,7 +129,7 @@ async function loginHandler(req, res) {
       safeUserData,
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "15m",
+        expiresIn: "30s",
       }
     );
 
@@ -138,7 +138,7 @@ async function loginHandler(req, res) {
       safeUserData,
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "7d",
+        expiresIn: "1d",
       }
     );
 
