@@ -1,16 +1,16 @@
 ### GET ALL USERS (Butuh Token)
-GET http://localhost:5000/api/user/users
+GET https://be-dea-505940949397.us-central1.run.app/api/user/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJpYXQiOjE3NDc2NDQxMDgsImV4cCI6MTc0NzY0NTAwOH0.N6l4XrHI2ER21Vcw-XN8Rd4g1sjBWE_ev8hfO4afC0U
 ###
 
 ### GET USER BY ID (Butuh Token)
-GET http://localhost:5000/api/user/users/3
+GET https://be-dea-505940949397.us-central1.run.app/api/user/users/3
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJpYXQiOjE3NDc2NDQxMDgsImV4cCI6MTc0NzY0NTAwOH0.N6l4XrHI2ER21Vcw-XN8Rd4g1sjBWE_ev8hfO4afC0U
 
 ###
 
 ### POST REGISTER USER
-POST http://localhost:5000/api/user/register
+POST https://be-dea-505940949397.us-central1.run.app/api/user/register
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 ###
 
 ### PUT UPDATE USER (Optional Password) (Butuh Token)
-PUT http://localhost:5000/api/user/edit-user/1
+PUT https://be-dea-505940949397.us-central1.run.app/api/user/edit-user/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkRlYSIsImVtYWlsIjoiZGVhQGV4YW1wbGUuY29tIiwiZ2VuZGVyIjoiZmVtYWxlIiwiY3JlYXRlZEF0IjoiMjAyNS0wNS0xNlQxNjowMToyOS4wMDBaIiwidXBkYXRlZEF0IjoiMjAyNS0wNS0xNlQxNzowOTo0NS4wMDBaIiwiaWF0IjoxNzQ3NDE1NDY2LCJleHAiOjE3NDc0MTU0OTZ9.UxDmr529TGxlpKo6WX0XhT0QbAH8pFay3oZ45mHc3RI
 Content-Type: application/json
 
@@ -37,7 +37,7 @@ Content-Type: application/json
 ###
 
 ### DELETE USER BY ID
-DELETE http://localhost:5000/api/user/delete-user/1
+DELETE https://be-dea-505940949397.us-central1.run.app/api/user/delete-user/1
 
 ###
 
@@ -53,32 +53,33 @@ Content-Type: application/json
 ###
 
 ### GET REFRESH TOKEN
-GET http://localhost:5000/api/user/token
+GET https://be-dea-505940949397.us-central1.run.app/api/user/token
 
 ###
 
 ### DELETE LOGOUT
-DELETE http://localhost:5000/api/user/logout
+DELETE https://be-dea-505940949397.us-central1.run.app/api/user/logout
 
 
 ### ===================== NOTES API =====================
 
 ### GET ALL NOTES (Butuh Token)
-GET http://localhost:5000/api/notes
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTIxVDEwOjAwOjU2LjAwMFoiLCJpYXQiOjE3NDc4MjE2ODEsImV4cCI6MTc0NzgyMjU4MX0.NUcVaY0HxztS5-JtEPcrw_clVOTDEn_UVO9pGrc4RDI
+GET https://be-dea-505940949397.us-central1.run.app/api/notes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTIxVDEwOjA5OjA2LjAwMFoiLCJpYXQiOjE3NDc4MjI0MDUsImV4cCI6MTc0NzgyMzMwNX0.ksFsP_lVsftsAbaUeSnrrnnWnHDIF115-bd8p_nuoVA
+
 
 
 ###
 
 ### GET NOTE BY ID (Butuh Token)
-GET http://localhost:5000/api/notes/16
+GET https://be-dea-505940949397.us-central1.run.app/api/notes/16
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTIxVDEwOjAwOjU2LjAwMFoiLCJpYXQiOjE3NDc4MjE2ODEsImV4cCI6MTc0NzgyMjU4MX0.NUcVaY0HxztS5-JtEPcrw_clVOTDEn_UVO9pGrc4RDI
 
 ###
 
 ### POST NEW NOTE (Butuh Token)
-POST http://localhost:5000/api/notes
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34
+POST https://be-dea-505940949397.us-central1.run.app/api/notes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6IkRlYWFhMiIsImVtYWlsIjoiZGVhYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE5VDA4OjQwOjU5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTIxVDEwOjA5OjA2LjAwMFoiLCJpYXQiOjE3NDc4MjI0MDUsImV4cCI6MTc0NzgyMzMwNX0.ksFsP_lVsftsAbaUeSnrrnnWnHDIF115-bd8p_nuoVA
 Content-Type: application/json
 
 {
@@ -89,7 +90,7 @@ Content-Type: application/json
 ###
 
 ### PUT UPDATE NOTE BY ID (Butuh Token)
-PUT http://localhost:5000/api/notes/16
+PUT https://be-dea-505940949397.us-central1.run.app/api/notes/16
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34
 Content-Type: application/json
 
@@ -101,5 +102,5 @@ Content-Type: application/json
 ###
 
 ### DELETE NOTE BY ID (Butuh Token)
-DELETE http://localhost:5000/api/notes/1
+DELETE https://be-dea-505940949397.us-central1.run.app/api/notes/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6IkRlYTIiLCJlbWFpbCI6ImRlYTJAZXhhbXBsZS5jb20iLCJnZW5kZXIiOiJmZW1hbGUiLCJjcmVhdGVkQXQiOiIyMDI1LTA1LTE2VDE3OjA5OjI4LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA1LTE3VDIwOjM2OjI3LjAwMFoiLCJpYXQiOjE3NDc1MTUxMjUsImV4cCI6MTc0NzUxNjAyNX0.uiwCpDDw3xDDMN-TNGGYQjGpT-WOTEKG5emmQjQek34

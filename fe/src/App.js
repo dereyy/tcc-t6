@@ -5,7 +5,7 @@ import axios from "axios";
 import NotesList from "./components/NotesList";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import { API_BASE_URL, checkApiConnection } from "./Util/util";
+import { API_BASE_URL, checkApiConnection, isTokenExpired, refreshToken } from "./Util/util";
 import "./index.css";
 import { MdExitToApp } from "react-icons/md";
 
@@ -16,6 +16,38 @@ const App = () => {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [isApiConnected, setIsApiConnected] = useState(true);
+
+  // Fungsi untuk mendapatkan token yang valid
+  const getValidToken = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return null;
+
+    if (isTokenExpired(token)) {
+      try {
+        return await refreshToken();
+      } catch (error) {
+        console.error("Gagal refresh token:", error);
+        return null;
+      }
+    }
+    return token;
+  };
+
+  // Fungsi untuk membuat request dengan token yang valid
+  const makeAuthenticatedRequest = async (requestFn) => {
+    try {
+      const token = await getValidToken();
+      if (!token) throw new Error("Token tidak valid");
+
+      return await requestFn(token);
+    } catch (error) {
+      if (error.message === "Token tidak valid") {
+        showMessage("Sesi Anda telah berakhir. Silakan login ulang.", "error");
+        handleLogout();
+      }
+      throw error;
+    }
+  };
 
   useEffect(() => {
     const checkConnection = async () => {
@@ -39,23 +71,10 @@ const App = () => {
   };
 
   const checkLoginStatus = async () => {
-    const token = localStorage.getItem("accessToken");
-    const userId = localStorage.getItem("userId"); // Ambil userId dari localStorage
-    console.log("[checkLoginStatus] Token:", token);
-    console.log("[checkLoginStatus] userId:", userId);
+    const token = await getValidToken();
+    const userId = localStorage.getItem("userId");
 
-    // 🆕 Decode dan tampilkan isi payload JWT (untuk debug)
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        console.log("[checkLoginStatus] Decoded Payload:", payload);
-        console.log("[checkLoginStatus] userId from token:", payload.id);
-      } catch (e) {
-        console.error("Failed to decode token", e);
-      }
-    }
-
-    if (!token || !userId || isNaN(userId)) {
+    if (!token || !userId) {
       setIsLoggedIn(false);
       return;
     }
@@ -67,8 +86,6 @@ const App = () => {
         },
       });
 
-      console.log("[checkLoginStatus] Response /users/:id:", response.data);
-
       if (response.data && response.data.email) {
         setIsLoggedIn(true);
         try {
@@ -79,137 +96,97 @@ const App = () => {
             "error"
           );
         }
-      } else {
-        setIsLoggedIn(false);
-        showMessage("Token tidak valid, silakan login ulang.", "error");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("userId");
       }
     } catch (error) {
-      console.error(
-        "[checkLoginStatus] Error saat verifikasi login:",
-        error.response?.data || error.message
-      );
-      setIsLoggedIn(false);
-      showMessage("Gagal verifikasi login. Silakan login ulang.", "error");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("userId");
+      console.error("Error saat verifikasi login:", error);
+      if (error.response?.status === 401) {
+        handleLogout();
+      }
     }
   };
 
   const fetchNotes = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
+      await makeAuthenticatedRequest(async (token) => {
+        const response = await axios.get(`${API_BASE_URL}/notes`, {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-      console.log("[fetchNotes] Access token:", token);
-
-      if (!token) throw new Error("Token tidak ditemukan, silakan login.");
-
-      const response = await axios.get(`${API_BASE_URL}/notes`, {
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        const notesData = Array.isArray(response.data) ? response.data : [];
+        setNotes(notesData);
       });
-
-      console.log("[fetchNotes] Response data:", response.data);
-
-      // Pastikan data adalah array, jika tidak, ubah menjadi array kosong
-      const notesData = Array.isArray(response.data) ? response.data : [];
-      setNotes(notesData);
     } catch (error) {
-      if (error.response) {
-        console.error(
-          "[fetchNotes] Server error:",
-          error.response.status,
-          error.response.data
-        );
-        showMessage(
-          `Gagal memuat catatan: ${error.response.status} - ${
-            error.response.data.message || error.response.statusText
-          }`,
-          "error"
-        );
-      } else if (error.request) {
-        console.error(
-          "[fetchNotes] Tidak ada respon dari server:",
-          error.request
-        );
-        showMessage(
-          "Tidak ada respon dari server. Cek koneksi atau server backend.",
-          "error"
-        );
-      } else {
-        console.error("[fetchNotes] Error:", error.message);
-        showMessage("Terjadi kesalahan: " + error.message, "error");
-      }
-      setNotes([]); // Set notes menjadi array kosong jika terjadi error
+      console.error("Error fetching notes:", error);
+      setNotes([]);
     }
   };
 
   const addNote = async (noteData) => {
     try {
-      await axios.post(
-        `${API_BASE_URL}/notes`,
-        {
-          judul: noteData.judul,
-          isi: noteData.isi,
-          tanggal: new Date().toISOString(),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      await makeAuthenticatedRequest(async (token) => {
+        await axios.post(
+          `${API_BASE_URL}/notes`,
+          {
+            judul: noteData.judul,
+            isi: noteData.isi,
+            tanggal: new Date().toISOString(),
           },
-        }
-      );
-
-      await fetchNotes(); // agar notes terupdate
-      showMessage("Catatan berhasil ditambah.", "success");
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        await fetchNotes();
+        showMessage("Catatan berhasil ditambah.", "success");
+      });
     } catch (error) {
-      console.error("❌ Gagal menambah note:", error);
+      console.error("Gagal menambah note:", error);
       showMessage("Gagal menambah catatan!", "error");
-      alert("Gagal menambah catatan!");
     }
   };
 
   const deleteNote = async (id) => {
     try {
-      await axios.delete(`${API_BASE_URL}/notes/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+      await makeAuthenticatedRequest(async (token) => {
+        await axios.delete(`${API_BASE_URL}/notes/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+        showMessage("Catatan berhasil dihapus.", "success");
       });
-
-      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
-      showMessage("Catatan berhasil dihapus.", "success");
     } catch (error) {
-      console.error("❌ Gagal menghapus note:", error);
+      console.error("Gagal menghapus note:", error);
       showMessage("Gagal menghapus catatan!", "error");
-      alert("Gagal menghapus catatan!");
     }
   };
 
   const editNote = async (id, judulBaru, isiBaru) => {
     try {
-      await axios.put(
-        `${API_BASE_URL}/notes/${id}`,
-        {
-          judul: judulBaru,
-          isi: isiBaru,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      await makeAuthenticatedRequest(async (token) => {
+        await axios.put(
+          `${API_BASE_URL}/notes/${id}`,
+          {
+            judul: judulBaru,
+            isi: isiBaru,
           },
-        }
-      );
-
-      await fetchNotes();
-      showMessage("Catatan berhasil diedit.", "success");
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        await fetchNotes();
+        showMessage("Catatan berhasil diedit.", "success");
+      });
     } catch (error) {
-      console.error("❌ Gagal mengedit note:", error);
+      console.error("Gagal mengedit note:", error);
       showMessage("Gagal mengedit catatan!", "error");
-      alert("Gagal mengedit catatan!");
     }
   };
 
@@ -229,9 +206,10 @@ const App = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("userId");
     setIsLoggedIn(false);
-    setNotes([]); // kosongkan notes
+    setNotes([]);
   };
 
   if (!isApiConnected) {

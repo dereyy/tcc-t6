@@ -128,7 +128,7 @@ async function loginHandler(req, res) {
       safeUserData,
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "15m", // biasanya 15 menit
+        expiresIn: "30s", // biasanya 15 menit
       }
     );
     const refreshToken = jwt.sign(
