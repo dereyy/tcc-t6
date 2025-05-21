@@ -102,12 +102,9 @@ const App = () => {
 
       console.log("[fetchNotes] Response data:", response.data);
 
-      // Validasi bahwa data adalah array
-      if (!Array.isArray(response.data)) {
-        throw new Error("Data catatan tidak valid atau bukan array.");
-      }
-
-      setNotes(response.data);
+      // Pastikan data adalah array, jika tidak, ubah menjadi array kosong
+      const notesData = Array.isArray(response.data) ? response.data : [];
+      setNotes(notesData);
     } catch (error) {
       if (error.response) {
         console.error(
@@ -134,8 +131,7 @@ const App = () => {
         console.error("[fetchNotes] Error:", error.message);
         showMessage("Terjadi kesalahan: " + error.message, "error");
       }
-
-      throw error; // tetap dilempar ulang untuk penanganan lebih lanjut
+      setNotes([]); // Set notes menjadi array kosong jika terjadi error
     }
   };
 

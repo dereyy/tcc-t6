@@ -3,10 +3,25 @@
   // Get All Notes
   export const getNotes = async (req, res) => {
     try {
-      const response = await Notes.findAll();
+      const userId = req.userId; // Ambil userId dari token yang sudah diverifikasi
+      if (!userId) {
+        return res.status(401).json({ msg: "User ID tidak ditemukan" });
+      }
+
+      const response = await Notes.findAll({
+        where: {
+          userId: userId
+        }
+      });
+
+      // Pastikan response adalah array
+      if (!response) {
+        return res.status(200).json([]); // Return array kosong jika tidak ada data
+      }
+
       res.status(200).json(response);
     } catch (error) {
-      console.log(error.message);
+      console.error("Error in getNotes:", error.message);
       res.status(500).json({ msg: "Gagal mengambil data catatan" });
     }
   };
