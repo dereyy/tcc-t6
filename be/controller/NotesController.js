@@ -8,7 +8,11 @@ export const getNotes = async (req, res) => {
     console.log("[getNotes] User ID dari token:", req.userId);
 
     // Coba ambil semua catatan dulu tanpa filter
-    const allNotes = await Notes.findAll();
+    console.log("[getNotes] Mencoba mengambil semua catatan...");
+    const allNotes = await Notes.findAll({
+      raw: true,
+      logging: console.log
+    });
     console.log("[getNotes] Semua catatan:", allNotes);
 
     // Jika berhasil, baru filter berdasarkan userId
@@ -18,10 +22,13 @@ export const getNotes = async (req, res) => {
       return res.status(401).json({ msg: "User ID tidak ditemukan" });
     }
 
+    console.log("[getNotes] Mencari catatan untuk userId:", userId);
     const userNotes = await Notes.findAll({
       where: {
         userId: userId
-      }
+      },
+      raw: true,
+      logging: console.log
     });
 
     console.log("[getNotes] Catatan user:", userNotes);
@@ -50,27 +57,37 @@ export const createNote = async (req, res) => {
     console.log("[createNote] Data yang diterima:", { judul, isi, userId });
 
     if (!judul || !isi) {
+      console.log("[createNote] Validasi gagal: judul atau isi kosong");
       return res.status(400).json({ msg: "Judul dan Isi harus diisi" });
     }
 
     if (!userId) {
+      console.log("[createNote] Validasi gagal: userId tidak ditemukan");
       return res.status(401).json({ msg: "User ID tidak ditemukan" });
     }
 
+    console.log("[createNote] Mencoba membuat catatan baru...");
     const newNote = await Notes.create({
       judul,
       isi,
       userId,
       tanggal: new Date()
+    }, {
+      logging: console.log
     });
 
-    console.log("[createNote] Catatan berhasil dibuat:", newNote);
+    console.log("[createNote] Catatan berhasil dibuat:", newNote.toJSON());
     res.status(201).json({ msg: "Notes Berhasil Dibuat", data: newNote });
   } catch (error) {
-    console.error("[createNote] Error:", error);
+    console.error("[createNote] Error detail:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     res.status(500).json({ 
       msg: "Gagal membuat catatan",
-      error: error.message 
+      error: error.message,
+      details: error.stack
     });
   }
 };
