@@ -17,15 +17,32 @@ app.use((req, res, next) => {
   next();
 });
 
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://frontend-dea-dot-b-08-450916.uc.r.appspot.com',
+  'https://fe-dea-505940949397.us-central1.run.app'
+];
+
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://fe-dea-505940949397.us-central1.run.app"],
+    origin: function(origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
   })
 );
+
 app.use(express.json());
 
 // Health check endpoints
@@ -76,5 +93,5 @@ const HOST = '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
   console.log(`Server berjalan di http://${HOST}:${PORT}`);
-  console.log('CORS diaktifkan untuk:', ['http://localhost:3000', 'https://fe-dea-505940949397.us-central1.run.app']);
+  console.log('CORS diaktifkan untuk:', allowedOrigins);
 });
