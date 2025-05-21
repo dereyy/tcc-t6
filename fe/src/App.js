@@ -5,7 +5,7 @@ import axios from "axios";
 import NotesList from "./components/NotesList";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import { API_BASE_URL } from "./Util/util";
+import { API_BASE_URL, checkApiConnection } from "./Util/util";
 import "./index.css";
 import { MdExitToApp } from "react-icons/md";
 
@@ -15,8 +15,17 @@ const App = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  const [isApiConnected, setIsApiConnected] = useState(true);
 
   useEffect(() => {
+    const checkConnection = async () => {
+      const connected = await checkApiConnection();
+      setIsApiConnected(connected);
+      if (!connected) {
+        showMessage("Tidak dapat terhubung ke server. Pastikan server backend berjalan di localhost:5000", "error");
+      }
+    };
+    checkConnection();
     checkLoginStatus();
   }, []);
 
@@ -224,6 +233,29 @@ const App = () => {
     setIsLoggedIn(false);
     setNotes([]); // kosongkan notes
   };
+
+  if (!isApiConnected) {
+    return (
+      <div className="container">
+        <div style={{ 
+          padding: "20px", 
+          backgroundColor: "#ffebee", 
+          borderRadius: "8px",
+          margin: "20px 0",
+          textAlign: "center"
+        }}>
+          <h2>Koneksi Error</h2>
+          <p>Tidak dapat terhubung ke server backend.</p>
+          <p>Pastikan:</p>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            <li>Server backend berjalan di localhost:5000</li>
+            <li>Tidak ada firewall yang memblokir koneksi</li>
+            <li>Port 5000 tidak digunakan oleh aplikasi lain</li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
