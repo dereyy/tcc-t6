@@ -14,16 +14,14 @@ import { Me } from "../controller/UserController.js";
 
 const router = express.Router();
 
-//endpoint akses token
-router.get("/token", refreshToken);
-//endpoin auth
+// Auth endpoints
 router.post("/login", loginHandler);
+router.post("/refresh-token", refreshToken);
 router.delete("/logout", logout);
-
 router.get("/me", Me);
 
-//endpoint data biasa
-router.post("/register", createUser); //tambah user
+// User management endpoints
+router.post("/register", createUser);
 router.get("/users", verifyToken, getUsers);
 router.get("/users/:id", verifyToken, getUserById);
 router.put("/edit-user/:id", verifyToken, updateUser);
