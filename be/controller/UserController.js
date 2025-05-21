@@ -49,7 +49,7 @@ async function createUser(req, res) {
     // Buat note default untuk user baru
     await Notes.create({
       judul: "Welcome to Your Notes!",
-      isi: `Hi there! 👋\n\nThis is your first note. You can use this space to write your thoughts 💭\n✨ Tip: You can edit or delete this note anytime.\n\nHappy writing!`,
+      isi: `Hi there! 👋\n\nThis is your first note. You can use this space to write your thoughts or every think you want 💭\n You can edit or delete this note anytime ✨\n\nHappy writing!`,
       userId: newUser.id,
       tanggal: new Date()
     });
