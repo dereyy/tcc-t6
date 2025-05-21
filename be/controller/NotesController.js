@@ -1,25 +1,37 @@
 import Notes from "../model/NotesModel.js";
+import User from "../model/UserModel.js";
 
 export const getNotes = async (req, res) => {
   try {
+    console.log("[getNotes] Fetching notes for userId:", req.userId);
+    
     const data = await Notes.findAll({
-      where: { userId: req.userId },
-      order: [['tanggal_dibuat', 'DESC']]      // ← gunakan kolom timestamp yang sebenarnya
+      where: {
+        userId: req.userId
+      },
+      include: [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'name', 'email']
+      }],
+      order: [['createdAt', 'DESC']]
     });
-
-    res.status(200).json({
+    
+    console.log("[getNotes] Found notes:", data);
+    
+    res.json({
       status: "Success",
-      data: data
+      data: data || []
     });
   } catch (error) {
-    console.error("Error getting notes:", error);
+    console.error("[getNotes] Error:", error);
     res.status(500).json({
       status: "Error",
-      message: "Gagal mengambil data catatan"
+      message: "Gagal mengambil data catatan",
+      error: error.message
     });
   }
 };
-
 
 export const createNote = async (req, res) => {
   try {
@@ -31,11 +43,15 @@ export const createNote = async (req, res) => {
       });
     }
     
+    console.log("[createNote] Creating note for userId:", req.userId);
+    
     const note = await Notes.create({ 
       judul, 
       isi,
-      userId: req.userId // Tambahkan userId dari token
+      userId: req.userId
     });
+    
+    console.log("[createNote] Created note:", note);
     
     res.status(201).json({
       status: "Success",
@@ -43,10 +59,11 @@ export const createNote = async (req, res) => {
       data: note
     });
   } catch (error) {
-    console.error("Error creating note:", error);
+    console.error("[createNote] Error:", error);
     res.status(500).json({
       status: "Error",
-      message: "Gagal membuat catatan"
+      message: "Gagal membuat catatan",
+      error: error.message
     });
   }
 };
@@ -61,12 +78,14 @@ export const updateNote = async (req, res) => {
       });
     }
     
+    console.log("[updateNote] Updating note:", req.params.id, "for userId:", req.userId);
+    
     const [updated] = await Notes.update(
       { judul, isi },
       { 
         where: { 
           id: req.params.id,
-          userId: req.userId // Hanya update note milik user yang login
+          userId: req.userId
         } 
       }
     );
@@ -83,20 +102,23 @@ export const updateNote = async (req, res) => {
       message: "Catatan berhasil diubah"
     });
   } catch (error) {
-    console.error("Error updating note:", error);
+    console.error("[updateNote] Error:", error);
     res.status(500).json({
       status: "Error",
-      message: "Gagal mengubah catatan"
+      message: "Gagal mengubah catatan",
+      error: error.message
     });
   }
 };
 
 export const deleteNote = async (req, res) => {
   try {
+    console.log("[deleteNote] Deleting note:", req.params.id, "for userId:", req.userId);
+    
     const deleted = await Notes.destroy({ 
       where: { 
         id: req.params.id,
-        userId: req.userId // Hanya hapus note milik user yang login
+        userId: req.userId
       } 
     });
     
@@ -112,10 +134,11 @@ export const deleteNote = async (req, res) => {
       message: "Catatan berhasil dihapus"
     });
   } catch (error) {
-    console.error("Error deleting note:", error);
+    console.error("[deleteNote] Error:", error);
     res.status(500).json({
       status: "Error",
-      message: "Gagal menghapus catatan"
+      message: "Gagal menghapus catatan",
+      error: error.message
     });
   }
 };
