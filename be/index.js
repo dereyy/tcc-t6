@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://frontend-dea-dot-b-08-450916.uc.r.appspot.com"],
+    origin: ["http://localhost:3000", "https://fe-dea-505940949397.us-central1.run.app"],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -28,12 +28,30 @@ app.use(
 );
 app.use(express.json());
 
+// Health check endpoints
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "ok",
+    message: "Server is running 🚀",
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get("/api", (req, res) => {
+  res.json({ 
+    status: "ok",
+    message: "API is running",
+    endpoints: {
+      notes: "/api/notes",
+      auth: "/api/user"
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Use routes
 app.use("/api", GeneralRoute);
-app.use("/api/user", UserRoute); // endpoints: /api/user/login, /api/user/register, etc.
-
-// Home page
-app.get("/", (req, res) => res.send("Server is running 🚀"));
+app.use("/api/user", UserRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -44,9 +62,19 @@ app.use((err, req, res, next) => {
   });
 });
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    status: "error",
+    message: "Endpoint tidak ditemukan"
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server berjalan di http://localhost:${PORT}`);
-  console.log('CORS diaktifkan untuk:', ['http://localhost:3000', 'https://frontend-dea-dot-b-08-450916.uc.r.appspot.com']);
+const HOST = '0.0.0.0';
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server berjalan di http://${HOST}:${PORT}`);
+  console.log('CORS diaktifkan untuk:', ['http://localhost:3000', 'https://fe-dea-505940949397.us-central1.run.app']);
 });
