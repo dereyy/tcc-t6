@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Baris yang ingin Anda tambahkan
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ msg: "Token tidak ditemukan, akses ditolak" });
@@ -12,7 +12,8 @@ export const verifyToken = (req, res, next) => {
     if (err) {
       return res.status(403).json({ msg: "Token tidak valid, akses ditolak" });
     }
-    req.user = decoded; // Simpan payload token ke req.user
+    req.userId = decoded.id; // Simpan userId dari token
+    req.user = decoded; // Simpan seluruh data user
     next();
   });
 };
