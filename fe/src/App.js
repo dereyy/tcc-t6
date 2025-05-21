@@ -103,11 +103,11 @@ const App = () => {
       console.log("[fetchNotes] Response data:", response.data);
 
       // Validasi bahwa data adalah array
-      if (!Array.isArray(response.data)) {
+      if (!response.data.data || !Array.isArray(response.data.data)) {
         throw new Error("Data catatan tidak valid atau bukan array.");
       }
 
-      setNotes(response.data);
+      setNotes(response.data.data);
     } catch (error) {
       if (error.response) {
         console.error(
