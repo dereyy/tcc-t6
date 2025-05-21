@@ -159,6 +159,7 @@ async function loginHandler(req, res) {
       message: "Login berhasil",
       user: safeUserData,
       accessToken,
+      refreshToken
     });
   } catch (error) {
     console.error("Login error:", error);

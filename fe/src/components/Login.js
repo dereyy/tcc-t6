@@ -28,13 +28,14 @@ const Login = ({ onLoginSuccess, navigateToRegister }) => {
 
       console.log("Login response:", response.data);
 
-      const { accessToken } = response.data;
-      if (!accessToken) {
+      const { accessToken, refreshToken } = response.data;
+      if (!accessToken || !refreshToken) {
         throw new Error("Token tidak ada di response");
       }
 
-      // Store token
+      // Store tokens
       localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
 
       // Decode JWT to get userId
       try {
