@@ -3,15 +3,13 @@ import Notes from "../model/NotesModel.js";
 export const getNotes = async (req, res) => {
   try {
     const data = await Notes.findAll({
-      where: {
-        userId: req.userId // Filter notes by user ID
-      },
-      order: [['createdAt', 'DESC']] // Urutkan dari yang terbaru
+      where: { userId: req.userId },
+      order: [['tanggal_dibuat', 'DESC']]      // ← gunakan kolom timestamp yang sebenarnya
     });
-    
-    res.json({
+
+    res.status(200).json({
       status: "Success",
-      data: data || [] // Return empty array if no notes found
+      data: data
     });
   } catch (error) {
     console.error("Error getting notes:", error);
@@ -21,6 +19,7 @@ export const getNotes = async (req, res) => {
     });
   }
 };
+
 
 export const createNote = async (req, res) => {
   try {

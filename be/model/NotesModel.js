@@ -13,11 +13,8 @@ const Notes = db.define(
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: {
-        model: 'user',
-        key: 'id'
-      }
-    }
+      field: "userId", // pastikan nama kolom di DB sama
+    },
   },
   {
     freezeTableName: true,
@@ -30,8 +27,8 @@ const Notes = db.define(
 // Add foreign key constraint
 Notes.associate = (models) => {
   Notes.belongsTo(models.User, {
-    foreignKey: 'userId',
-    as: 'user'
+    foreignKey: "userId",
+    as: "user",
   });
 };
 
