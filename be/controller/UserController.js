@@ -1,4 +1,5 @@
 import User from "../model/UserModel.js";
+import Notes from "../model/NotesModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -22,7 +23,7 @@ async function getUserById(req, res) {
   }
 }
 
-// REGISTER //baru nambahin pasword dan bcrypt
+// REGISTER
 async function createUser(req, res) {
   try {
     const { name, email, gender, password } = req.body;
@@ -38,12 +39,21 @@ async function createUser(req, res) {
     }
 
     const encryptPassword = await bcrypt.hash(password, 5);
-    await User.create({
+    const newUser = await User.create({
       name,
       email,
       gender,
       password: encryptPassword,
     });
+
+    // Buat note default untuk user baru
+    await Notes.create({
+      judul: "Welcome to Your Notes!",
+      isi: `Hi there! 👋\n\nThis is your first note. You can use this space to write your thoughts 💭\n✨ Tip: You can edit or delete this note anytime.\n\nHappy writing!`,
+      userId: newUser.id,
+      tanggal: new Date()
+    });
+
     res.status(201).json({ msg: "Register Berhasil" });
   } catch (error) {
     console.log(error.message);
