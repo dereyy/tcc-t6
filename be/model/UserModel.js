@@ -12,7 +12,16 @@ const User = db.define(
   },
   {
     freezeTableName: true,
+    timestamps: true
   }
 );
+
+// Add relationship with Notes
+User.associate = (models) => {
+  User.hasMany(models.Notes, {
+    foreignKey: 'userId',
+    as: 'notes'
+  });
+};
 
 export default User;

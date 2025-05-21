@@ -21,9 +21,18 @@ const Notes = db.define(
   },
   {
     freezeTableName: true,
+    timestamps: true,
     createdAt: "tanggal_dibuat",
     updatedAt: "tanggal_diubah",
   }
 );
+
+// Add foreign key constraint
+Notes.associate = (models) => {
+  Notes.belongsTo(models.User, {
+    foreignKey: 'userId',
+    as: 'user'
+  });
+};
 
 export default Notes;
